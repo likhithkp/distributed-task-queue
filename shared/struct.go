@@ -6,12 +6,12 @@ type Response struct {
 }
 
 type BulkTask struct {
-	Name  string
-	Tasks []Task
+	Name  string `json:"name"`
+	Tasks []Task `json:"tasks"`
 }
 
 type Task struct {
-	Name     string
-	Data     any
-	Priority bool
+	Name     string `json:"name"`
+	Data     any    `json:"data"`
+	Priority bool   `json:"priority"`
 }

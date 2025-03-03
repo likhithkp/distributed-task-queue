@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func AddToQueue(w http.ResponseWriter, r *http.Request) {
+func BulkUpload(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		res := &shared.Response{
 			Message:    "Not a valid method",
@@ -17,9 +17,9 @@ func AddToQueue(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(&res)
 	}
 
-	task := new(shared.Task)
+	tasks := new(shared.BulkTask)
 
-	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&tasks); err != nil {
 		res := &shared.Response{
 			Message:    "Error while decoding data",
 			StatusCode: http.StatusInternalServerError,
@@ -28,7 +28,7 @@ func AddToQueue(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(&res)
 	}
 
-	if task.Name == "" || task.Data == nil {
+	if tasks.Name == "" || len(tasks.Tasks) == 0 {
 		res := &shared.Response{
 			Message:    "task 'name' and 'data' are required/missing fields",
 			StatusCode: http.StatusMethodNotAllowed,
@@ -37,9 +37,11 @@ func AddToQueue(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(&res)
 	}
 
-	if task.Priority {
-		services.AddToHighPriorityQueue(task)
-	} else {
-		services.AddToLowPriorityQueue(task)
+	for _, task := range tasks.Tasks {
+		if task.Priority {
+			services.AddToHighPriorityQueue(&task)
+		} else {
+			services.AddToLowPriorityQueue(&task)
+		}
 	}
 }
