@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
-func ExecuteTask(task *[]string) {
-	fmt.Println("TASK EXECUTED", task)
+func ExecuteTask(task string) bool {
+	go fmt.Println("TASK EXECUTED", task)
+	return true
 }
