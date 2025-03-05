@@ -6,8 +6,9 @@ type Response struct {
 }
 
 type BulkTask struct {
-	Name  string `json:"name"`
-	Tasks []Task `json:"tasks"`
+	Name     string `json:"name"`
+	Function func() `json:"function"`
+	Tasks    []Task `json:"tasks"`
 }
 
 type Task struct {
