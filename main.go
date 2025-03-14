@@ -16,6 +16,6 @@ func main() {
 
 	http.HandleFunc("/tasks", producer.AddToQueue)
 	http.HandleFunc("/tasks/bulk", producer.BulkUpload)
-	http.HandleFunc("/tasks/schedule", producer.BulkUpload)
+	http.HandleFunc("/tasks/schedule", producer.Schedule)
 	http.ListenAndServe(":3000", nil)
 }
