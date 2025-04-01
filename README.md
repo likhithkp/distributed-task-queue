@@ -5,6 +5,7 @@ A simple distributed task queue implementation in Go using Redis, where tasks ar
 
 ## Features
 - **Task Queueing**: Tasks can be added to a queue with either high or normal priority.
+- **Task Scheduling**: Tasks can be scheduled to a queue.
 - **Worker**: A worker processes tasks based on their priority (high priority tasks first).
 - **REST API**: A simple HTTP interface for adding tasks to the queue and bulk uploading tasks.
 
@@ -102,11 +103,24 @@ The worker will continuously listen for tasks in the queue and process them. The
   ```
 - **Response**: HTTP status `200 OK` if all tasks were added successfully.
 
+### `POST /tasks/schedule`
+- **Description**: Schedule task.
+- **Request Body**:
+  ```json
+  {
+    "priority": true,
+    "task": "Task description",
+    "time": "2006-01-02T15:04:05Z07:00"
+  }
+  ```
+- **Response**: HTTP status `200 OK` if the task was added successfully.
+
 ## Worker Behavior
 - The worker processes tasks from the Redis queue:
   - First, it processes high-priority tasks.
   - Once all high-priority tasks are completed, it moves to process normal-priority tasks.
-- Tasks are processed by popping them from the queue and executing them. If a task fails, it will be moved to a dead-letter queue (DLQ) for further inspection or retries.
+- Tasks are processed by popping them from the queue and executing them. If a task fails, it will be moved to a dead-letter queue (DLQ) for retries.
+- Scheduled tasks are also handled by checking the scheduled queue periodically and executing tasks when their scheduled time arrives.
 
 ## Scaling and Improvements
 - **Multiple Workers**: You can scale this by deploying multiple workers to handle more tasks concurrently.
