@@ -12,6 +12,7 @@ func main() {
 	defer redisClient.Close()
 
 	go worker.Worker()
+	go worker.ScheduledTask()
 	go worker.FailedTaskQueue()
 
 	http.HandleFunc("/tasks", producer.AddToQueue)
